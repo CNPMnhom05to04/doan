@@ -10,7 +10,6 @@ export default function LoginPage() {
                     <p className="text-sm text-gray-500 text-center mt-2">Dùng email và mật khẩu để tiếp tục</p>
                     <LoginForm className="mt-6" />
                 </div>
-                <p className="mt-4 text-center text-xs text-gray-500">© {new Date().getFullYear()} DoAn</p>
             </div>
         </main>
     );

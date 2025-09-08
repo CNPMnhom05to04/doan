@@ -30,6 +30,7 @@ export default function LoginForm({ className = "" }: { className?: string }) {
         } catch (e: any) {
             setFormError(e?.message || "Đăng nhập thất bại");
         }
+
     };
 
     return (

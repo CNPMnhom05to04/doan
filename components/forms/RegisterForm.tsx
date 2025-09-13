@@ -40,20 +40,6 @@ function SocialButton({ icon, label, onClick }: { icon: React.ReactNode; label: 
         </button>
     );
 }
-/*
-// ---- Icons (unstyled inline SVGs) ----
-const GoogleIcon = (
-    <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4" focusable="false">
-        <path fill="#EA4335" d="M12 10.2v3.6h5.1c-.2 1.2-1.5 3.5-5.1 3.5-3.1 0-5.7-2.6-5.7-5.8S8.9 5.7 12 5.7c1.8 0 3 .8 3.7 1.6l2.5-2.4C17 3.4 14.7 2.5 12 2.5 6.9 2.5 2.7 6.7 2.7 11.9S6.9 21.3 12 21.3c6.4 0 9.3-4.5 9.3-8.4 0-.6-.1-1.1-.2-1.6H12z" />
-    </svg>
-);
-
-const AppleIcon = (
-    <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4" focusable="false">
-        <path fill="currentColor" d="M19.67 16.12c-.35.81-.77 1.56-1.26 2.26-.66.95-1.42 1.43-2.28 1.43-.49 0-1.08-.14-1.76-.43-.68-.29-1.28-.43-1.79-.43-.55 0-1.17.14-1.86.43-.69.29-1.25.44-1.69.44-.91 0-1.7-.49-2.37-1.47-.51-.7-.94-1.5-1.28-2.41-.39-1.03-.58-2.03-.58-3 0-1.11.24-2.06.73-2.85.38-.64.88-1.15 1.5-1.52.62-.37 1.28-.56 1.98-.58.49 0 1.13.16 1.9.47.77.31 1.27.47 1.51.47.19 0 .73-.18 1.63-.53.88-.33 1.62-.47 2.22-.41 1.63.13 2.86.78 3.69 1.95-1.47.9-2.2 2.16-2.2 3.79 0 1.26.47 2.31 1.41 3.15.42.38.9.68 1.44.91-.12.33-.25.66-.41.98zM15.98 2.86c0 .83-.3 1.6-.89 2.29-.72.84-1.58 1.33-2.53 1.25a2.6 2.6 0 0 1-.02-.32c0-.79.34-1.63.95-2.31.3-.35.68-.64 1.14-.86.46-.22.9-.34 1.31-.35.03.1.04.2.04.3z" />
-    </svg>
-);
-*/
 // ---- Main Component ----
 export default function RegisterUdemy() {
     const [showPassword, setShowPassword] = React.useState(false);
@@ -83,8 +69,6 @@ export default function RegisterUdemy() {
         }
     };
 
-    //  const handleGoogle = () => alert("Giả lập đăng ký qua Google");
-    //const handleApple = () => alert("Giả lập đăng ký qua Apple");
 
     return (
         <div className="min-h-screen w-full bg-gray-50 flex items-center justify-center p-4">
@@ -99,22 +83,13 @@ export default function RegisterUdemy() {
 
                 {/* Card */}
                 <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-                    {/*    <h1 className="mb-2 text-2xl font-bold center text-gray-900">Tạo tài khoản</h1>
-                    <p className="mb-4 text-sm text-gray-600">Tham gia để khám phá hàng ngàn khoá học.</p>
-              */}
-                    {/* Social sign-up */}
-                    {/*                 <div className="grid gap-3">
-                        <SocialButton icon={GoogleIcon} label="Tiếp tục với Google" onClick={handleGoogle} />
-                        <SocialButton icon={AppleIcon} label="Tiếp tục với Apple" onClick={handleApple} />
-                    </div>
-   */}
+
+
                     {/* Divider */}
                     <div className="my-6 flex items-center">
                         <div className="h-px flex-1 bg-gray-200" />
-                        {// <span className="px-3 text-xs uppercase tracking-wide text-gray-500">hoặc</span>
-                        }
-                        {// <div className="h-px flex-1 bg-gray-200" />
-                        }
+
+                        <div className="h-px flex-1 bg-gray-200" />
                     </div>
 
                     {/* Form */}

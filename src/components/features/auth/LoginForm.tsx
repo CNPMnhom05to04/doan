@@ -4,15 +4,41 @@ import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
-import RegisterForm from "./RegisterForm"; // import component đăng ký ở cùng folder
+import RegisterForm from "./RegisterForm";
+import { login } from "@/api/auth";
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [activeTab, setActiveTab] = useState<"login" | "register">("login");
 
+  // state cho form
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setErrorMsg(null);
+    try {
+      const res = await login({ username, password });
+      // TODO: chuyển trang sau khi đăng nhập thành công
+      // ví dụ: window.location.href = "/dashboard";
+      console.log("Login OK:", res);
+    } catch (err: any) {
+      const msg =
+        err?.response?.data?.message ||
+        err?.message ||
+        "Đăng nhập thất bại. Vui lòng thử lại.";
+      setErrorMsg(msg);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <div className="max-w-md w-full space-y-6 bg-white p-8 rounded-lg">
-      {/* Title */}
       <h2 className="text-xl font-medium text-center text-black">
         Chào mừng đến với Eduva!
       </h2>
@@ -21,49 +47,43 @@ export default function LoginForm() {
       <div className="flex justify-center space-x-2">
         <button
           onClick={() => setActiveTab("login")}
-          className={`px-6 py-2 rounded-full font-medium transition ${activeTab === "login"
-            ? "bg-[#2F327D] text-white"
-            : "bg-black text-white"
+          className={`px-6 py-2 rounded-full font-medium transition ${activeTab === "login" ? "bg-[#2F327D] text-white" : "bg-black text-white"
             }`}
         >
           Đăng nhập
         </button>
         <button
           onClick={() => setActiveTab("register")}
-          className={`px-6 py-2 rounded-full font-medium transition ${activeTab === "register"
-            ? "bg-[#2F327D] text-white"
-            : "bg-black text-white"
+          className={`px-6 py-2 rounded-full font-medium transition ${activeTab === "register" ? "bg-[#2F327D] text-white" : "bg-black text-white"
             }`}
         >
           Đăng ký
         </button>
       </div>
 
-      {/* Description */}
       <p className="text-sm text-black text-center">
         Eduva là nền tảng giáo dục trực tuyến hiện đại giúp mỗi cá nhân có thể học nhanh và hiệu quả hơn.
       </p>
 
-      {/* Nội dung: login hoặc register */}
       {activeTab === "login" ? (
-        <form className="space-y-4">
-          <label className="block mb-1 text-sm font-medium text-black">
-            Tài khoản
-          </label>
+        <form className="space-y-4" onSubmit={handleSubmit}>
+          <label className="block mb-1 text-sm font-medium text-black">Tài khoản</label>
           <Input
             placeholder="Nhập tên tài khoản"
             className="text-[#ACACAC]"
+            value={username}
+            onChange={(e: any) => setUsername(e.target.value)}
           />
 
           <div>
-            <label className="block mb-1 text-sm font-medium text-black">
-              Mật khẩu
-            </label>
+            <label className="block mb-1 text-sm font-medium text-black">Mật khẩu</label>
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Nhập mật khẩu"
                 className="w-full rounded-lg border border-gray-300 px-4 py-2 text-[#ACACAC] focus:outline-none focus:ring-2 focus:ring-[#2F327D]"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
               <button
                 type="button"
@@ -80,20 +100,22 @@ export default function LoginForm() {
               <input type="checkbox" className="rounded" />
               <span>Ghi nhớ cho lần sau</span>
             </label>
-            <a href="#" className="text-[#2F327D] hover:underline">
-              Bạn quên mật khẩu?
-            </a>
+            <a href="#" className="text-[#2F327D] hover:underline">Bạn quên mật khẩu?</a>
           </div>
+
+          {errorMsg && (
+            <div className="text-red-600 text-sm">{errorMsg}</div>
+          )}
 
           <Button
             type="submit"
-            className="w-full bg-[#2F327D] text-white hover:opacity-90"
+            className="w-full bg-[#2F327D] text-white hover:opacity-90 disabled:opacity-60"
+            disabled={loading}
           >
-            Đăng nhập
+            {loading ? "Đang đăng nhập..." : "Đăng nhập"}
           </Button>
         </form>
       ) : (
-        // Khi activeTab === "register", hiển thị component đăng ký
         <RegisterForm />
       )}
     </div>

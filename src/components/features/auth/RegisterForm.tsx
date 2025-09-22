@@ -8,14 +8,20 @@ const primary = "#1F2A7A";
 const primaryHover = "#1a246a";
 const border = "#2A2F3A";
 
+// regex theo backend: ít nhất 8 ký tự, có thường + hoa + số
+const PASS_RULE = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+// username: chỉ chữ, số, ., _, -, tối thiểu 5 ký tự
+const USER_RULE = /^[a-zA-Z0-9._-]{5,}$/;
+
 export default function RegisterForm() {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
 
-    // form state
-    const [fullName, setFullName] = useState("");
+    // form state (đúng 3 trường backend cần)
+    const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    // chỉ dùng để kiểm tra, không gửi lên API
     const [confirm, setConfirm] = useState("");
     const [agree, setAgree] = useState(false);
 
@@ -29,22 +35,39 @@ export default function RegisterForm() {
         setErrorMsg(null);
         setSuccessMsg(null);
 
-        if (!fullName.trim()) return setErrorMsg("Vui lòng nhập họ và tên.");
+        // ---- validate theo backend ----
+        if (!username.trim()) return setErrorMsg("Vui lòng nhập tên đăng nhập.");
+        if (!USER_RULE.test(username))
+            return setErrorMsg(
+                "Tên đăng nhập tối thiểu 5 ký tự và chỉ gồm chữ, số, '.', '_' hoặc '-'."
+            );
+
         if (!email.trim()) return setErrorMsg("Vui lòng nhập email.");
+        // check email rất nhẹ; backend sẽ kiểm tra kỹ hơn
+        if (!/^\S+@\S+\.\S+$/.test(email))
+            return setErrorMsg("Email không hợp lệ.");
+
         if (!password) return setErrorMsg("Vui lòng nhập mật khẩu.");
-        if (password.length < 6) return setErrorMsg("Mật khẩu tối thiểu 6 ký tự.");
-        if (password !== confirm) return setErrorMsg("Mật khẩu xác nhận không khớp.");
+        if (!PASS_RULE.test(password))
+            return setErrorMsg(
+                "Mật khẩu phải ≥ 8 ký tự và có ít nhất 1 chữ hoa, 1 chữ thường, 1 chữ số."
+            );
+
+        if (password !== confirm)
+            return setErrorMsg("Mật khẩu xác nhận không khớp.");
+
         if (!agree) return setErrorMsg("Bạn cần đồng ý Điều khoản & Chính sách.");
 
         try {
             setLoading(true);
-            // ⚠️ Đổi tên key cho khớp backend (name/fullName, email, password)
-            const res = await registerApi({ fullName, email, password });
+            // chỉ gửi 3 trường đúng với UserCreationRequest
+            const res = await registerApi({ username, email, password });
             setSuccessMsg("Tạo tài khoản thành công! Bạn có thể đăng nhập ngay.");
-            // TODO: có thể tự chuyển tab sang “Đăng nhập” hoặc redirect
             console.log("Register OK:", res);
-            // reset
-            setPassword(""); setConfirm("");
+
+            // reset một phần
+            setPassword("");
+            setConfirm("");
         } catch (err: any) {
             const msg =
                 err?.response?.data?.message ||
@@ -58,14 +81,14 @@ export default function RegisterForm() {
 
     return (
         <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
-            {/* Name */}
+            {/* Username */}
             <label className="block">
-                <span className="mb-2 block text-sm text-gray-300">Họ và tên</span>
+                <span className="mb-2 block text-sm text-gray-300">Tên đăng nhập</span>
                 <input
                     type="text"
-                    placeholder="Nguyễn Văn A"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
+                    placeholder="admin_01"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
                     className="w-full rounded-full bg-transparent px-5 py-3 text-sm text-gray-100 outline-none"
                     style={{ border: `1px solid ${border}` }}
                     required
@@ -89,15 +112,17 @@ export default function RegisterForm() {
             {/* Password */}
             <label className="block">
                 <span className="mb-2 block text-sm text-gray-300">Mật khẩu</span>
-                <div className="relative" style={{ border: `1px solid ${border}`, borderRadius: "9999px" }}>
+                <div
+                    className="relative"
+                    style={{ border: `1px solid ${border}`, borderRadius: "9999px" }}
+                >
                     <input
                         type={showPassword ? "text" : "password"}
-                        placeholder="Tối thiểu 6 ký tự"
+                        placeholder="Ít nhất 8 ký tự, có hoa + thường + số"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         className="w-full rounded-full bg-transparent px-5 py-3 pr-16 text-sm text-gray-100 outline-none"
                         required
-                        minLength={6}
                     />
                     <button
                         type="button"
@@ -109,10 +134,15 @@ export default function RegisterForm() {
                 </div>
             </label>
 
-            {/* Confirm password */}
+            {/* Confirm password (chỉ kiểm tra, không gửi) */}
             <label className="block">
-                <span className="mb-2 block text-sm text-gray-300">Xác nhận mật khẩu</span>
-                <div className="relative" style={{ border: `1px solid ${border}`, borderRadius: "9999px" }}>
+                <span className="mb-2 block text-sm text-gray-300">
+                    Xác nhận mật khẩu
+                </span>
+                <div
+                    className="relative"
+                    style={{ border: `1px solid ${border}`, borderRadius: "9999px" }}
+                >
                     <input
                         type={showConfirm ? "text" : "password"}
                         placeholder="Nhập lại mật khẩu"
@@ -120,7 +150,6 @@ export default function RegisterForm() {
                         onChange={(e) => setConfirm(e.target.value)}
                         className="w-full rounded-full bg-transparent px-5 py-3 pr-16 text-sm text-gray-100 outline-none"
                         required
-                        minLength={6}
                     />
                     <button
                         type="button"
@@ -148,7 +177,8 @@ export default function RegisterForm() {
                     và{" "}
                     <Link href="/privacy" className="text-blue-400 hover:underline">
                         Chính sách quyền riêng tư
-                    </Link>.
+                    </Link>
+                    .
                 </p>
             </div>
 
@@ -162,8 +192,14 @@ export default function RegisterForm() {
                 disabled={loading}
                 className="w-full rounded-full py-3 text-sm font-semibold transition-colors disabled:opacity-60"
                 style={{ backgroundColor: primary, color: "white" }}
-                onMouseDown={(e) => ((e.currentTarget as HTMLButtonElement).style.backgroundColor = primaryHover)}
-                onMouseUp={(e) => ((e.currentTarget as HTMLButtonElement).style.backgroundColor = primary)}
+                onMouseDown={(e) =>
+                ((e.currentTarget as HTMLButtonElement).style.backgroundColor =
+                    primaryHover)
+                }
+                onMouseUp={(e) =>
+                ((e.currentTarget as HTMLButtonElement).style.backgroundColor =
+                    primary)
+                }
             >
                 {loading ? "Đang tạo tài khoản..." : "Tạo tài khoản"}
             </button>

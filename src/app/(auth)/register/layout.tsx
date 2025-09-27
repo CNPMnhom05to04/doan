@@ -1,28 +1,20 @@
-import type { ReactNode } from "react";
-
-/**
- * RegisterLayout defines the layout for the register route.
- * It displays a hero image on large screens and renders child content in the second column.
- * The background color matches the design of the login/register pages.
- */
-const pageBg = "#0F1115";
-
-export default function RegisterLayout({ children }: { children: ReactNode }) {
+export default function RegisterLayout({ children }: { children: React.ReactNode }) {
     return (
-        <main
-            className="min-h-[100svh] w-full grid lg:grid-cols-2"
-            style={{ backgroundColor: pageBg }}
-        >
-            {/* Hero image panel (hidden on smaller screens) */}
-            <section className="hidden lg:block relative">
+        <div className="fixed inset-0 grid md:grid-cols-2 overflow-hidden">
+            <div className="relative hidden md:block">
                 <img
-                    src="/hero.jpg"
-                    alt="hero"
-                    className="absolute inset-0 h-full w-full object-cover opacity-80 pointer-events-none z-0"
+                    src="/login-bg.png"
+                    alt=""
+                    className="absolute inset-0 h-full w-full object-cover"
                 />
-            </section>
-            {/* Content panel (register card will be rendered here) */}
-            {children}
-        </main>
+                <div className="absolute inset-0 bg-black/40" />
+            </div>
+
+            <div className="h-full w-full overflow-y-auto overscroll-contain">
+                <main className="mx-auto w-full max-w-xl px-6 py-10 pb-24">
+                    {children}
+                </main>
+            </div>
+        </div>
     );
 }

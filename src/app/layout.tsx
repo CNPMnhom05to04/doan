@@ -1,9 +1,12 @@
-// src/app/layout.tsx
-import "../styles/globals.css"; // đi ra khỏi app/ rồi vào styles/
+import type { Metadata } from "next";
+import "../styles/globals.css"; // đổi path đúng với project của bạn
 
-import type { ReactNode } from 'react';
+export const metadata: Metadata = {
+    title: "Eduva",
+    description: "Eduva LMS",
+};
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="vi">
             <body>{children}</body>

@@ -1,25 +1,22 @@
-import Image from "next/image";
-import type { ReactNode } from "react";
-
-export default function LoginLayout({ children }: { children: ReactNode }) {
+export default function LoginLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex h-screen">
-      {/* Left side with background image + overlay */}
-      <div className="relative w-1/2 hidden md:block">
-        {/* Image */}
-        <Image
+    // Ghim full viewport, body không còn cuộn
+    <div className="fixed inset-0 grid md:grid-cols-2 overflow-hidden">
+      {/* Cột trái: ảnh nền */}
+      <div className="relative hidden md:block">
+        <img
           src="/login-bg.png"
-          alt="Eduva"
-          fill
-          className="object-cover z-0"
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover"
         />
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-[#2F327D] opacity-30 z-10" />
+        <div className="absolute inset-0 bg-black/40" />
       </div>
 
-      {/* Right side with login form */}
-      <div className="flex w-full md:w-1/2 items-center justify-center p-8 bg-white relative z-20">
-        {children}
+      {/* Cột phải: CHỈ cột này được cuộn */}
+      <div className="h-full w-full overflow-y-auto overscroll-contain">
+        <main className="mx-auto w-full max-w-xl px-6 py-10 pb-24">
+          {children}
+        </main>
       </div>
     </div>
   );

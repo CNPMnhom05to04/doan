@@ -23,6 +23,7 @@ export default function LoginForm() {
     setErrorMsg(null);
     try {
       const res = await login({ username, password });
+      console.log("đăng nhập thành công", res);
       // TODO: chuyển trang sau khi đăng nhập thành công
       // ví dụ: window.location.href = "/dashboard";
       console.log("Login OK:", res);
